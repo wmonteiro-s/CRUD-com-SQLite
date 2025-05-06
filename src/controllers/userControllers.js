@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client"
-import { json } from "express"
 
 const prisma = new PrismaClient()
 
@@ -17,13 +16,14 @@ export const getAllUsers = async (req, res) => {
 }
 
 export const createUser = async (req, res) => {
-    const { name, email } = req.body
+    const { name, email, password } = req.body
 
     try {
         const newUser = await prisma.user.create({
             data: {
                 name,
-                email
+                email,
+                password
             }
         })
         
@@ -57,13 +57,14 @@ export const deleteUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const id = req.params.id
-        const { name, email } = req.body
+        const { name, email, password } = req.body
     
         const user = await prisma.user.update({
             where: { id: Number(id)},
             data: {
                 name,
-                email
+                email,
+                password
             }
         })
         
