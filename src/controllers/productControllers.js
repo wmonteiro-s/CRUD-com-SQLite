@@ -59,7 +59,6 @@ export const getProduct = async (req, res) => {
 }
 
 export const updateProduct = async (req, res) => {
-    
     try {
         const id = req.params.id
         const { name, description, price, stock } = req.body
@@ -78,6 +77,22 @@ export const updateProduct = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             mensagem: "Erro ao atualizar o produto",
+            erro: error.message
+        })
+    }
+}
+
+export const deleteProduct = async (req, res) => {
+    try {
+        const id = req.params.id
+        await prisma.product.delete({
+            where: { id: Number(id) }
+        })
+
+        res.status(204).send()
+    } catch (error) {
+        res.status(400).json({
+            mensagem: "Erro ao deletar o produto",
             erro: error.message
         })
     }
