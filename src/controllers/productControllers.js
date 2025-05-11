@@ -25,3 +25,14 @@ export const createProduct = async (req, res)  => {
 
 }
 
+export const getAllProducts = async (req, res) => {
+    try {
+        const product = await prisma.product.findMany()
+        res.status(200).json(product)
+    } catch (error) {
+        res.status(400).json({
+            mensagem: 'Erro ao buscar todos os produtos',
+            erro: error.message
+        })
+    }
+}
