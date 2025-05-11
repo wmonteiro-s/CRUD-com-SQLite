@@ -38,8 +38,8 @@ export const getAllProducts = async (req, res) => {
 }
 
 export const getProduct = async (req, res) => {
-    const {id} = req.params
     try {
+        const id = req.params.id
         const product = await prisma.product.findUnique({
             where: { id: Number(id) }
         })
@@ -53,6 +53,31 @@ export const getProduct = async (req, res) => {
     } catch (error) {
         res.status(400).json({
             mensagem: `Erro ao buscar o produto com o ID ${id}`,
+            erro: error.message
+        })
+    }
+}
+
+export const updateProduct = async (req, res) => {
+    
+    try {
+        const id = req.params.id
+        const { name, description, price, stock } = req.body
+
+        const product = await prisma.product.update({
+            where: { id: Number(id) },
+            data: {
+                name,
+                description,
+                price,
+                stock
+            }
+        })
+
+        res.status(201).json(product)
+    } catch (error) {
+        res.status(400).json({
+            mensagem: "Erro ao atualizar o produto",
             erro: error.message
         })
     }
