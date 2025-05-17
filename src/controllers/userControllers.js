@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client"
+import { generateToken, hashPassword } from "../utils/auth.js"
 
 const prisma = new PrismaClient()
 
@@ -76,4 +77,34 @@ export const updateUser = async (req, res) => {
         })
     }
 
+}
+
+export const registerUser = async (req, res) => {
+    const { name, email, password } = req.body
+
+    try {
+        const hashedPassword = await hashPassword(password)
+
+        const newRegisteredUser = await prisma.user.create({
+            data: {
+                name,
+                email,
+                password: hashedPassword
+            }
+        })
+
+        const token = generateToken(newRegisteredUser)
+
+        const {id:__omitededId, password:__omitedPassword, ...userWithoutIdPssw} = newRegisteredUser
+
+        res.status(201).json({
+            ...userWithoutIdPssw,
+            token: token
+        })
+    } catch (error) {
+        res.status(400).json({
+            erro: "Erro ao criar usuário",
+            detalhes: error.message
+        })
+    }
 }
